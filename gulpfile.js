@@ -1,24 +1,17 @@
-const {
-	src,
-	dest,
-	watch,
-	series,
-	parallel
-} = require('gulp');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const cleanCSS = require('gulp-clean-css');
-const babel = require('gulp-babel');
-const uglify = require('gulp-uglify');
-const sourcemaps = require('gulp-sourcemaps');
-const browserSync = require('browser-sync');
-sass.compiler = require('node-sass');
+const { src, dest, watch, series, parallel } = require('gulp')
+const sass = require('gulp-sass')(require('sass'))
+const autoprefixer = require('gulp-autoprefixer')
+const cleanCSS = require('gulp-clean-css')
+const babel = require('gulp-babel')
+const uglify = require('gulp-uglify')
+const sourcemaps = require('gulp-sourcemaps')
+const browserSync = require('browser-sync')
 
-const srcSCSS = `./src/scss/**/*.scss`;
-const srcJS = `./src/js/**/*.js`;
+const srcSCSS = `./src/scss/**/*.scss`
+const srcJS = `./src/js/**/*.js`
 
-const destCSS = `./assets/css`;
-const destJS = `./assets/js`;
+const destCSS = `./assets/css`
+const destJS = `./assets/js`
 
 const prodCSS = () => {
 	return src(srcSCSS)
@@ -44,11 +37,10 @@ const prodCSS = () => {
 		.pipe(cleanCSS())
 		.pipe(sourcemaps.write('.'))
 		.pipe(dest(destCSS))
-		.pipe(browserSync.stream());
-};
+		.pipe(browserSync.stream())
+}
 const prodJS = () => {
-	return (
-		src(srcJS)
+	return src(srcJS)
 		.pipe(sourcemaps.init())
 		.pipe(
 			babel({
@@ -60,18 +52,16 @@ const prodJS = () => {
 		.pipe(sourcemaps.write('.'))
 		.pipe(dest(destJS))
 		.pipe(browserSync.stream())
-	);
-};
+}
 const devCSS = () => {
 	return src(srcSCSS)
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer())
 		.pipe(dest(destCSS))
-		.pipe(browserSync.stream());
-};
+		.pipe(browserSync.stream())
+}
 const devJS = () => {
-	return (
-		src(srcJS)
+	return src(srcJS)
 		.pipe(
 			babel({
 				comments: false,
@@ -80,8 +70,7 @@ const devJS = () => {
 		)
 		.pipe(dest(destJS))
 		.pipe(browserSync.stream())
-	);
-};
+}
 const liveReload = () => {
 	// For Apache, Nginx, etc...
 	// browserSync.init({
@@ -93,21 +82,21 @@ const liveReload = () => {
 		server: true,
 		notify: true,
 		open: true,
-	});
-};
+	})
+}
 
 const prodWatch = () => {
-	liveReload();
-	watch(srcSCSS, prodCSS).on('change', browserSync.reload);
-	watch(srcJS, prodJS).on('change', browserSync.reload);
-	watch('./**/*.html').on('change', browserSync.reload);
-};
+	liveReload()
+	watch(srcSCSS, prodCSS).on('change', browserSync.reload)
+	watch(srcJS, prodJS).on('change', browserSync.reload)
+	watch('./**/*.html').on('change', browserSync.reload)
+}
 const devWatch = () => {
-	liveReload();
-	watch(srcSCSS, devCSS).on('change', browserSync.reload);
-	watch(srcJS, devJS).on('change', browserSync.reload);
-	watch('./**/*.html').on('change', browserSync.reload);
-};
+	liveReload()
+	watch(srcSCSS, devCSS).on('change', browserSync.reload)
+	watch(srcJS, devJS).on('change', browserSync.reload)
+	watch('./**/*.html').on('change', browserSync.reload)
+}
 
-exports.prod = series(parallel(prodCSS, prodJS), prodWatch);
-exports.default = series(parallel(devCSS, devJS), devWatch);
+exports.prod = series(parallel(prodCSS, prodJS), prodWatch)
+exports.default = series(parallel(devCSS, devJS), devWatch)
